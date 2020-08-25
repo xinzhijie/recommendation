@@ -9,7 +9,7 @@
       <el-col :push="1" :span="22">
         <el-card>
           <div style="float: right">
-            周期产水量：<el-input
+            注剂量：<el-input
                   style="width: 70px"
                   v-model="range.minNum"
                   size="mini"/>-
@@ -17,6 +17,11 @@
                     style="width: 70px"
                     v-model="range.maxNum"
                     size="mini"/>
+            <br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;步长：<el-input
+              style="width: 70px"
+              v-model="range.step"
+              size="mini"/>
           </div>
 
           <el-button v-if="submit.deleted === 1"  @click="addData()" type="primary">新增</el-button>
@@ -102,13 +107,6 @@
                       width="120"
               >
               </el-table-column>
-              <el-table-column
-                      align="center"
-                      prop="noteDose"
-                      label="注剂量"
-                      width="120"
-              >
-              </el-table-column>
             </el-table-column>
             <el-table-column align="center" label="注气参数">
 
@@ -157,17 +155,17 @@
             </el-table-column>
 
             <el-table-column
-                    label="周期产水量"
+                    label="注剂量"
                     width="100"
                     align="center"
-                    prop="periodicYield"
+                    prop="noteDose"
                     fixed="right">
             </el-table-column>
           </el-table>
         </el-card>
       </el-col>
     </el-row>
-    <el-dialog :visible.sync="dialogOrgVisible">
+    <el-dialog :modal-append-to-body="false"  :visible.sync="dialogOrgVisible">
       <el-card class="box-card">
         <div class="text" style="max-height: 40em;overflow: auto">
           <el-form label-width="100px" ref="model" :model="formData">

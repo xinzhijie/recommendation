@@ -18,19 +18,17 @@ const admin = () => import('@/views/admin/user/index.vue');
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/', component: top,
-    children: [
-      { path: '/', component: index }
-    ]
+    path: '/', component: index
+
   },
   {
-    path: '/', component: top,
+    path: '/', component: index,
     children: [
       { path: '/list/:code', component: list }
     ]
   },
   {
-    path: '/predictionScore', component: top,
+    path: '/predictionScore', component: index,
     children: [
       { path: 'add/:id', component: predictionScore }
     ]
@@ -46,13 +44,13 @@ const routes: Array<RouteConfig> = [
     component: registry
   },
   {
-    path: '/recommendInjection', component: top,
+    path: '/recommendInjection', component: index,
     children: [
       { path: 'add/:id', component: recommendInjection }
     ]
   },
   {
-    path: '/recommendReservoir', component: top,
+    path: '/recommendReservoir', component: index,
     children: [
       { path: 'add/:id', component: recommendReservoir }
     ]

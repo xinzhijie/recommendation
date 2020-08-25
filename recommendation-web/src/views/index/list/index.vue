@@ -1,9 +1,11 @@
 <template>
   <div class="template-tab">
-    <div style="padding: 50px 0px 50px 0px">
-      <el-row style="margin-top: 10px">
+    <div >
+      <h2 style="text-align: center" v-if="$route.params.code === 'predictionScore'">注采效果评价</h2>
+      <h2 style="text-align: center" v-if="$route.params.code === 'recommendInjection'">油藏区块推荐</h2>
+      <h2 style="text-align: center" v-if="$route.params.code === 'recommendReservoir'">推荐注剂参数</h2>
+      <el-row >
         <el-col :span="22" :push="1">
-          <el-button @click="back()" style="float: right">返回</el-button>
           <el-button
             type="primary"
             style="float: right;margin-right: 10px"
@@ -15,7 +17,7 @@
       <el-row style="margin-top: 10px">
         <el-col :span="22" :push="1">
           <el-card>
-            <el-table :data="tableData" height="650" border style="width: 100%">
+            <el-table :data="tableData" :max-height="450" :height="450" border style="width: 100%">
               <el-table-column
                       align="center"
                       type="index"
@@ -43,14 +45,19 @@
   </div>
 </template>
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
   import { list, add, deleteSubmit } from "@/api/submit";
   import {namespace} from "vuex-class";
   const somemodule = namespace("user")
   @Component({
     name: "list"
   })
+
   export default class extends Vue {
+    @Watch("$route")
+    getVisible(newVal: any) {
+      this.list()
+    }
     @somemodule.State(state => state.user) user: any;
     private tableData:any = []
     private add() {
@@ -84,17 +91,18 @@
         this.list()
       })
     }
-    private handleUpload() {
-      console.log("2323")
+    private handleUpload(row: any) {
+      window.open("/api/download/" + row.id + "?score=" + this.$route.params.code)
     }
     created() {
       this.list()
     }
-
   }
 </script>
-<style rel="stylesheet/scss" lang="scss" scoped>
-.template-tab {
+<style rel="stylesheet/scss" lang="scss" >
+body {
+  width: 100%;
+  height: 100%;
   background-color: rgb(236, 240, 245);
 }
 </style>

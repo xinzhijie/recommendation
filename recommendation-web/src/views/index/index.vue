@@ -1,81 +1,90 @@
 <template>
-  <div>
-    <div class="login-page">
-      <el-form
-        ref="elForm"
-        :model="formData"
-        :rules="rules"
-        size="medium"
-        label-width="100px"
-      >
-        <el-row>
-          <el-col :push="7">
-            <el-form-item label="模型选择" prop="field115">
-              <div style="float: left">
-                <el-select
-                  v-model="formData.field115"
-                  placeholder="请选择模型选择"
-                  clearable
-                  @change="change"
-                  :style="{ width: '100%' }"
-                >
-                  <el-option
-                    v-for="(item, index) in field115Options"
-                    :key="index"
-                    :label="item.name"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
-              </div>
-              <div style="float: left;margin-left: 10px">
-                <el-button type="primary" @click="addModel()" size="small">
-                  新增模型
-                </el-button>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row style="margin-top: 60px">
-          <el-form-item label="" >
-            <router-link :to="{ path: '/list/predictionScore' }">
-              <el-button
-                style="width: 200px;height:60px"
-                type="primary"
-                icon="el-icon-search"
-                size="medium"
-              >
-                预测分数情况
-              </el-button>
-            </router-link>
-          </el-form-item>
-          <el-form-item label="" >
-            <router-link :to="{ path: '/list/recommendInjection' }">
-              <el-button
-                style="width: 200px;height:60px"
-                type="primary"
-                icon="el-icon-search"
-                size="medium"
-              >
-                推荐油藏参数
-              </el-button>
-            </router-link>
-          </el-form-item>
-          <el-form-item label="" >
-            <router-link :to="{ path: '/list/recommendReservoir' }">
-              <el-button
-                style="width: 200px;height:60px"
-                type="primary"
-                icon="el-icon-search"
-                size="medium"
-              >
-                推荐注剂参数
-              </el-button>
-            </router-link>
-          </el-form-item>
-        </el-row>
-      </el-form>
+  <div class="content">
+    <div class="topbar-title">
+      <el-row>
+        <el-col :span="24">
+          <el-menu
+                  class="el-menu-demo"
+                  mode="horizontal"
+                  :router="true"
+          >
+            <el-menu-item key="1" index="/">
+              <span slot="title">首页</span>
+            </el-menu-item>
+            <el-menu-item key="2" v-if="user.role === '10'" index="/admin/index">
+              <span slot="title">后台</span>
+            </el-menu-item>
+            <el-menu-item style="margin-left: 550px" key="2" v-if="user.role === '10'" index="/admin/index">
+              <b style="font-size: 20px" slot="title">RIPED-稠油开采大数据分析系统</b>
+            </el-menu-item>
+            <el-menu-item style="float: right" key="3">
+              <span slot="title" @click="loginOut()">退出</span>
+            </el-menu-item>
+            <el-menu-item style="float: right" key="4">
+              <span slot="title">admin</span>
+            </el-menu-item>
+          </el-menu>
+        </el-col>
+      </el-row>
     </div>
-    <el-dialog :visible.sync="dialogOrgVisible">
+    <el-row class="tac">
+      <el-col class="tacs" :span="3">
+
+        <el-select
+                v-model="formData.field115"
+                placeholder="请选择模型选择"
+                clearable
+                @change="change"
+                :style="{ width: '100%' }"
+        >
+          <el-option
+                  v-for="(item, index) in field115Options"
+                  :key="index"
+                  :label="item.name"
+                  :value="item.id"
+          ></el-option>
+        </el-select>
+
+        <el-menu
+                style="height: 2000px"
+                default-active="2"
+                class="el-menu-vertical-demo"
+                @close="handleClose"
+                background-color="#545c64"
+                text-color="#fff"
+                active-text-color="#ffd04b">
+`
+          <el-menu-item @click="addModel()" >
+            <i class="el-icon-setting"></i>
+            <span slot="title">新增模型</span>
+          </el-menu-item>
+
+            <router-link :to="{ path: '/list/predictionScore'}" >
+              <el-menu-item index="2">
+                <i class="el-icon-setting"></i>
+                <span slot="title">注采效果评价</span>
+              </el-menu-item>
+            </router-link>
+
+            <router-link :to="{ path: '/list/recommendInjection'}" >
+              <el-menu-item index="3">
+                <i class="el-icon-setting"></i>
+                <span slot="title">油藏区块推荐</span>
+              </el-menu-item>
+            </router-link>
+            <router-link :to="{ path: '/list/recommendReservoir'}" >
+              <el-menu-item index="4">
+                <i class="el-icon-setting"></i>
+                <span slot="title">推荐注剂参数</span>
+              </el-menu-item>
+            </router-link>
+        </el-menu>
+      </el-col>
+      <el-col :span="21">
+        <router-view/>
+      </el-col>
+    </el-row>
+    <el-dialog :modal-append-to-body="false"  :visible.sync="dialogOrgVisible">
       <el-card class="box-card">
         <div class="text" style="max-height: 40em;overflow: auto">
           <el-form ref="model" :model="formModel" :rules="rulesModel">
@@ -139,7 +148,7 @@ export default class extends Vue {
       }
     ]
   };
-  handleChange(file:any, fileList:any){
+  handleChange(file: any, fileList: any){
     if (fileList.length > 1) {
       fileList.splice(0, 1);
     }
@@ -153,6 +162,10 @@ export default class extends Vue {
       callback();
     }
   };
+  private loginOut() {
+    localStorage.removeItem("token");
+    this.$router.push("/login");
+  }
   private rulesModel = {
     name: [
       {
@@ -172,7 +185,7 @@ export default class extends Vue {
     this.getList()
   }
   private field115Options:any = {
-    name: ""
+    name: "1111"
   }
   private addModel() {
     this.fileName = ""
@@ -214,7 +227,7 @@ export default class extends Vue {
   }
 }
 </script>
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss" >
 .login-page {
   text-align: center;
   font-weight: 700;
@@ -226,4 +239,38 @@ export default class extends Vue {
   background: #fff;
   box-shadow: 0 0 25px #cac6c6;
 }
+.tacs {
+  .el-input__inner {
+
+    background-color: #535c64;
+    color: white;
+  }
+}
+
+.content{
+  width: 100%;
+  position: fixed;
+}
+.topbar-title {
+ .el-menu {
+   background-color: #3e3d68 !important;
+ }
+ .el-menu-demo > .el-menu-item {
+   color: #fff !important;
+   padding: 0 30px !important;
+ }
+ .el-menu-item:hover {
+   background: rgba(190, 190, 190, 0.5) !important;
+ }
+ .el-menu-item:focus {
+   background: rgba(190, 190, 190, 0.5) !important;
+ }
+ .el-menu-item {
+   border-bottom: none !important;
+ }
+ .el-menu-item.is-active {
+   background: rgba(190, 190, 190, 0.5) !important;
+ }
+}
+
 </style>

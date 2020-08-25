@@ -1,16 +1,17 @@
 <template>
-  <div style="padding: 50px 0 0 0">
+  <div>
+    <h2 style="text-align: center">油藏区块推荐</h2>
     <el-row>
       <el-col :push="1" :span="22">
-        <el-card>
-          <el-button style="float: right;" @click="searchQuery()" type="primary">查询</el-button>
+        <el-card v-loading="loading">
+          <el-button style="float: right;margin-left: 10px" @click="searchQuery()" type="primary">查询</el-button>
           <el-input
             style="width:150px;float: right;margin-bottom: 10px;" v-model="query.score"
           ></el-input>
-          <span style="float: right;line-height: 50px">分数阈值：</span>
+          <span style="float: right;line-height: 50px">分数查询：</span>
           <el-button v-if="submit.deleted === 1"  @click="addData()" type="primary">新增</el-button>
           <el-button v-if="submit.deleted === 1"  @click="generate()" type="primary">生成分数</el-button>
-          <el-button  @click="download()" type="primary">下载</el-button>
+          <el-button v-if="submit.deleted !== 1"  @click="download()" type="primary">下载</el-button>
           <el-button @click="back()">返回</el-button>
 
           <div  v-if="submit.deleted === 1"  style="float: left;margin-right: 10px">
@@ -27,7 +28,7 @@
           </div>
 
 
-          <el-table :data="tableData" height="70vh">
+          <el-table :data="tableData" :height="460" :max-height="460">
             <el-table-column
                     align="center"
                     type="index"
@@ -120,13 +121,6 @@
             <el-table-column align="center" label="生产参数">
               <el-table-column
                       align="center"
-                      prop="soakThePressure"
-                      label="焖井压力"
-                      width="120"
-              >
-              </el-table-column>
-              <el-table-column
-                      align="center"
                       prop="soakTime"
                       label="焖井时间"
                       width="120"
@@ -139,11 +133,6 @@
                       width="300"
               >
               </el-table-column>
-              <el-table-column align="center" prop="cycleOilProduction" label="周期产油量">
-              </el-table-column>
-              <el-table-column align="center" prop="periodicYield" label="周期产水量">
-              </el-table-column>
-
             </el-table-column>
             <el-table-column fixed="right" align="center" prop="score" label="分数">
             </el-table-column>
@@ -151,76 +140,96 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-dialog :visible.sync="dialogOrgVisible">
+    <el-dialog  :modal-append-to-body="false" :visible.sync="dialogOrgVisible">
       <el-card class="box-card">
-        <div class="text" style="max-height: 40em;overflow: auto">
-          <el-form label-width="100px" ref="model" :model="formData">
-            <el-form-item label="周期： " prop="name">
-              <el-input v-model="formData.cycle" />
-            </el-form-item>
-            <el-form-item label="射孔并段： " prop="name">
-              <el-input v-model="formData.perforatingSection" />
-            </el-form-item>
+        <div class="text" style="max-height: 350px;overflow: auto">
+          <el-form label-width="150px" ref="model" :model="formData">
+            <el-col :span="11">
+              <el-form-item label="周期： " prop="name">
+                <el-input v-model="formData.cycle" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="射孔并段： " prop="name">
+                <el-input v-model="formData.perforatingSection" />
+              </el-form-item>
+            </el-col>
+          <el-col :span="11">
             <el-form-item label="射孔厚度： " prop="name">
               <el-input v-model="formData.perforationThickness" />
             </el-form-item>
-            <el-form-item label="射孔层数： " prop="name">
+          </el-col>
+            <el-col :span="11">
+              <el-form-item label="射孔层数： " prop="name">
               <el-input v-model="formData.perforationLayer" />
             </el-form-item>
-            <el-form-item label="油藏厚度： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="油藏厚度： " prop="name">
               <el-input v-model="formData.reservoirThickness" />
             </el-form-item>
-            <el-form-item label="射孔段渗透率： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="射孔段渗透率： " prop="name">
               <el-input v-model="formData.perforationPermeability" />
             </el-form-item>
-            <el-form-item label="射孔段孔隙度： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="射孔段孔隙度： " prop="name">
               <el-input v-model="formData.porosityPerforationSection" />
             </el-form-item>
-            <el-form-item label="注剂类型： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="注剂类型： " prop="name">
               <el-input v-model="formData.noteType" />
             </el-form-item>
-            <el-form-item label="注入方式： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="注入方式： " prop="name">
               <el-input v-model="formData.injectionPattern" />
             </el-form-item>
-            <el-form-item label="注剂量： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="注剂量： " prop="name">
               <el-input v-model="formData.noteDose" />
             </el-form-item>
-            <el-form-item label="注汽强度： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="注汽强度： " prop="name">
               <el-input v-model="formData.steamInjectionIntensity" />
             </el-form-item>
-            <el-form-item label="注入天数： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="注入天数： " prop="name">
               <el-input v-model="formData.numberDays" />
             </el-form-item>
-            <el-form-item label="油压： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="油压： " prop="name">
               <el-input v-model="formData.oilPressure" />
             </el-form-item>
-            <el-form-item label="周期注汽量： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="周期注汽量： " prop="name">
               <el-input v-model="formData.periodicSteamInjection" />
             </el-form-item>
-            <el-form-item label="焖井压力： " prop="name">
-              <el-input v-model="formData.soakThePressure" />
-            </el-form-item>
-            <el-form-item label="焖井时间： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="焖井时间： " prop="name">
               <el-input v-model="formData.soakTime" />
             </el-form-item>
-            <el-form-item label="周期生产： " prop="name">
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="周期生产： " prop="name">
               <el-input v-model="formData.productionCycle" />
             </el-form-item>
-            <el-form-item label="周期产液量： " prop="name">
-              <el-input v-model="formData.periodicLiquidProduction" />
-            </el-form-item>
-            <el-form-item label="周期产油量： " prop="name">
-              <el-input v-model="formData.cycleOilProduction" />
-            </el-form-item>
-            <el-form-item label="周期产水量： " prop="name">
-              <el-input v-model="formData.periodicYield" />
-            </el-form-item>
+            </el-col>
           </el-form>
         </div>
       </el-card>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
         <el-button type="primary" @click="clickNode()">确 定</el-button>
+        <el-button @click="handleClose">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -244,8 +253,9 @@
       window.history.go(-1);
     }
     private query = {
-      score: ""
+      score: 0
     }
+    private loading = false;
     header =  {
       'token': getToken()
     }
@@ -292,8 +302,10 @@
       return false
     }
     list() {
+      this.loading = true
       list<any>({submitId : this.$route.params.id, score: this.query.score}).then(res => {
         this.tableData = res.data
+        this.loading = false
       })
     }
     addData() {
@@ -309,14 +321,23 @@
       this.dialogOrgVisible = false
     }
     generate() {
-      generate<[]>(this.$route.params.id).then(res => {
-        this.tableData = res.data
-        get<{}>(this.$route.params.id).then(res => {
-          this.submit = res.data
+      if (this.tableData.length > 0) {
+        generate<[]>(this.$route.params.id).then(res => {
+          this.tableData = res.data
+          get<{}>(this.$route.params.id).then(res => {
+            this.submit = res.data
+          })
         })
-      })
+      } else {
+        this.$message({
+          message: '请新增数据',
+          type: 'warning'
+        })
+      }
+
     }
     download() {
+      alert("/api/download/" + this.$route.params.id + "?score=" + this.query.score)
       window.open("/api/download/" + this.$route.params.id + "?score=" + this.query.score)
     }
     handleClose() {

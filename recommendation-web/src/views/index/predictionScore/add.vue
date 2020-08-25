@@ -337,7 +337,6 @@
 
     }
     download() {
-      alert("/api/download/" + this.$route.params.id + "?score=" + this.query.score)
       window.open("/api/download/" + this.$route.params.id + "?score=" + this.query.score)
     }
     handleClose() {

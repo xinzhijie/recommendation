@@ -127,7 +127,10 @@ def download(submitId):
                      soakTime, productionCycle, score from prediction_score
                      where submitId = 
     '''
-    sql = sql + submitId + ' and score >= ' + score
+    if score:
+        sql = sql + submitId + ' and score >= ' + score
+    else:
+        sql = sql + submitId
     data = db.session.execute(sql)
     for i in data:
         content.append(list(i.values()))

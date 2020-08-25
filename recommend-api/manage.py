@@ -10,7 +10,7 @@ app = Flask(__name__, static_folder='./static/static', template_folder="./static
 
 
 # 数据库链接的配置，此项必须，格式为（数据库+驱动://用户名:密码@数据库主机地址:端口/数据库名称）
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+cymysql://root:lmc@2017@192.168.154.110:3306/recommend'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+cymysql://root:lmc@2017@localhost:3306/recommend'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 跟踪对象的修改，在本例中用不到调高运行效率，所以设置为False
 db = SQLAlchemy(app=app)  # 为哪个Flask app对象创建SQLAlchemy对象，赋值为db
 

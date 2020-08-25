@@ -78,23 +78,21 @@ def upload_excel():
     table = data.sheets()[0]
     nrows = table.nrows  # 获取该sheet中的有效行数
     ncols = table.ncols  # 获取该sheet中的有效列数
-    print(nrows)
-    print(ncols)
+
     sql = '''
     insert into prediction_score(cycle, perforatingSection, perforationThickness,perforationLayer,
     reservoirThickness,perforationPermeability,porosityPerforationSection,noteType,injectionPattern,
-    noteDose,steamInjectionIntensity,numberDays,oilPressure,periodicSteamInjection,soakThePressure,
-    soakTime,productionCycle,periodicLiquidProduction,cycleOilProduction,periodicYield, submitId)
+    noteDose,steamInjectionIntensity,numberDays,oilPressure,periodicSteamInjection,
+    soakTime,productionCycle, submitId)
     values (:cycle, :perforatingSection, :perforationThickness,:perforationLayer,
     :reservoirThickness,:perforationPermeability,:porosityPerforationSection,:noteType,:injectionPattern,
-    :noteDose,:steamInjectionIntensity,:numberDays,:oilPressure,:periodicSteamInjection,:soakThePressure,
-    :soakTime,:productionCycle,:periodicLiquidProduction,:cycleOilProduction,:periodicYield, ''' + submitId + ''')
+    :noteDose,:steamInjectionIntensity,:numberDays,:oilPressure,:periodicSteamInjection,
+    :soakTime,:productionCycle, ''' + submitId + ''')
     '''
     key = ['cycle', 'perforatingSection', 'perforationThickness', 'perforationLayer', 'reservoirThickness',
-           'perforationPermeability', 'porosityPerforationSection', '开始注入日期', 'noteType', 'injectionPattern',
-           'noteDose', '注汽日期', '排量\n（m3/h）', 'steamInjectionIntensity', 'numberDays', 'oilPressure', '套压（Mpa）',
-           'periodicSteamInjection', 'soakThePressure', 'soakTime', '投产时间（日期）', 'productionCycle',
-           'periodicLiquidProduction', 'cycleOilProduction', 'periodicYield']
+           'perforationPermeability', 'porosityPerforationSection', 'noteType', 'injectionPattern',
+           'noteDose', 'steamInjectionIntensity', 'numberDays', 'oilPressure',
+           'periodicSteamInjection', 'soakTime', 'productionCycle']
     s = []
     for i in range(2, nrows):
         d = {}
@@ -116,20 +114,22 @@ def download(submitId):
     out = BytesIO()
     workbook = xlsxwriter.Workbook(out)
     table = workbook.add_worksheet()
-
+    score = request.args.get("score", None)
 
     content = [['周期',	'射孔井段（m）',	'射孔厚度（m）',	'射孔层数',	'油藏厚度（m）',	'射孔段渗透率（md）',	'射孔段孔隙度',
-    '注剂类型',  '注入方式',	'注剂量',	'注汽强度(t/m)',	'注入天数(d)',	'油压（Mpa）',		'周期注汽量(m3)',
-    '焖井压力(MPa)',	'焖井时间(d)', '周期生产时间',	'周期产液量（万吨）',	'周期产油量（万吨）',	'周期产水量（万吨）']]
-    score = request.args.get("score", None)
-    # score = request.get_json().get("score", None)
-    if score:
-        data = PredictionScore.query.filter(PredictionScore.submitId == submitId, PredictionScore.score >= score).all()
-    else:
-        data = PredictionScore.query.filter(PredictionScore.submitId == submitId).all()
-
-    value_dict = to_json(data)
-    for i in value_dict:
+    '注汽类型',  '注入方式',	'注剂量',	'注汽强度(t/m)',	'注入天数(d)',	'油压（Mpa）',		'周期注汽量(m3)',
+    '焖井时间(d)', '周期生产时间', '分数']]
+    sql = '''
+    select cycle, perforatingSection, perforationThickness, perforationLayer,
+                     reservoirThickness, perforationPermeability, porosityPerforationSection, noteType,
+                     injectionPattern,
+                     noteDose, steamInjectionIntensity, numberDays, oilPressure, periodicSteamInjection,
+                     soakTime, productionCycle, score from prediction_score
+                     where submitId = 
+    '''
+    sql = sql + submitId + ' and score >= ' + score
+    data = db.session.execute(sql)
+    for i in data:
         content.append(list(i.values()))
     for i in range(len(content)):
         for j in range(len(content[0])):

@@ -81,8 +81,10 @@ export default class extends Vue {
 
             localStorage.setItem("token", res.data.token);
 
-            this.getUserInfo()
-            this.$router.push("/");
+            this.getUserInfo().then(() => {
+              this.$router.push("/");
+            })
+
           } else {
             this.logining = false;
             this.$alert(res.msg, "提示", {

@@ -22,7 +22,7 @@ def add():
     s.model_name = request.get_json().get("modelName", "")
     s.model_path = request.get_json().get("modelPath", "")
     s.code = request.get_json().get("code", "")
-
+    s.predict = request.get_json().get("predict", "")
     db.session.add(s)
     db.session.commit()
     return make_response(jsonify(success(s)), 200)
@@ -31,6 +31,15 @@ def add():
 @submit.route('/api/submit/delete/<submitId>', methods=['GET', 'POST'])
 def delete(submitId):
     db.session.execute("update submit set deleted = 1 where id = " + submitId)
+    db.session.commit()
+
+    return make_response(jsonify(success(None)), 200)
+
+
+@submit.route('/api/submit/update/<submitId>', methods=['GET', 'POST'])
+def update(submitId):
+    predict = request.get_json().get("predict", "")
+    db.session.execute("update submit set predict = '" + predict + "'  where id = " + submitId)
     db.session.commit()
 
     return make_response(jsonify(success(None)), 200)

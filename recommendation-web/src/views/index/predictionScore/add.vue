@@ -322,7 +322,7 @@
     }
     generate() {
       if (this.tableData.length > 0) {
-        generate<[]>(this.$route.params.id).then(res => {
+        generate<[]>(this.$route.params.id, 'predictionScore', {}).then(res => {
           this.tableData = res.data
           get<{}>(this.$route.params.id).then(res => {
             this.submit = res.data

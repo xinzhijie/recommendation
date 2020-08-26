@@ -21,7 +21,7 @@
               <span slot="title" @click="loginOut()">退出</span>
             </el-menu-item>
             <el-menu-item style="float: right" key="4">
-              <span slot="title">admin</span>
+              <span slot="title">{{ user.name }}</span>
             </el-menu-item>
           </el-menu>
         </el-col>
@@ -129,6 +129,7 @@ const somemodule = namespace("user")
 export default class extends Vue {
   @somemodule.State(state => state.user) user: any;
   @somemodule.Action("setModel") setModel: any;
+  @somemodule.Action("removeUser") removeUser: any;
   @somemodule.Action("setModelInfo") setModelInfo: any;
 
   public formData = {
@@ -164,6 +165,7 @@ export default class extends Vue {
   };
   private loginOut() {
     localStorage.removeItem("token");
+    this.removeUser('user')
     this.$router.push("/login");
   }
   private rulesModel = {
@@ -185,7 +187,7 @@ export default class extends Vue {
     this.getList()
   }
   private field115Options:any = {
-    name: "1111"
+    name: ""
   }
   private addModel() {
     this.fileName = ""
@@ -214,7 +216,6 @@ export default class extends Vue {
         this.dialogOrgVisible = false
       }
     })
-
   }
   private getList() {
     getTrainingModel({createId : this.user.id}).then(res => {

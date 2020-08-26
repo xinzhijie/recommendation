@@ -8,28 +8,174 @@
     <el-row>
       <el-col :push="1" :span="22">
         <el-card>
-          <div style="float: right">
-            周期：<el-input
-                  style="width: 70px"
-                  v-model="range.minNum"
-                  size="mini"/>-
-            <el-input
-                    style="width: 70px"
-                    v-model="range.maxNum"
-                    size="mini"/>
-            <br/>
-            步长：<el-input
-                style="width: 70px"
-                v-model="range.step"
-                size="mini"/>
-          </div>
 
-          <el-button v-if="submit.deleted === 1"  @click="addData()" type="primary">新增</el-button>
-          <el-button v-if="submit.deleted === 1"  @click="generate()" type="primary">生成推荐</el-button>
-          <el-button v-if="submit.deleted !== 1"  @click="download()" type="primary">下载</el-button>
-          <el-button @click="back()">返回</el-button>
+          <el-row >
+                <el-checkbox-group :disabled="disabled" v-model="checkList">
+                  <el-col :span="8">
+                    <el-checkbox label="cycle" style="margin-right: 10px">油藏周期</el-checkbox>
+                    <span class="font16">范围：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      @input="inputValue(rangeCycle.minNum, 'rangeCycle', 'minNum')"
+                      @blur="inputValue(rangeCycle.minNum, 'rangeCycle', 'minNum')"
+                      v-model="rangeCycle.minNum"
+                      size="mini"/>-
+                    <el-input
+                        class="input16"
+                        :disabled="disabled"
+                        @input="inputValue(rangeCycle.maxNum, 'rangeCycle', 'maxNum')"
+                        @blur="inputValue(rangeCycle.maxNum, 'rangeCycle', 'maxNum')"
+                        v-model="rangeCycle.maxNum"
+                        size="mini"/>
+                    <span class="font16">步长：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      v-model="rangeCycle.step"
+                      size="mini"/>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-checkbox label="perforatingSection" style="margin-right: 10px">射孔井段</el-checkbox>
+                    <span class="font16">范围：</span> <el-input
+                      :disabled="disabled"
+                      class="input16"
+                      v-model="rangePerforatingSection.minNum"
+                      @input="inputValue(rangePerforatingSection.minNum, 'rangePerforatingSection', 'minNum')"
+                      @blur="inputValue(rangePerforatingSection.minNum, 'rangePerforatingSection', 'minNum')"
+                      size="mini"/>-
+                    <el-input
+                        :disabled="disabled"
+                        class="input16"
+                        @input="inputValue(rangePerforatingSection.maxNum, 'rangePerforatingSection', 'maxNum')"
+                        @blur="inputValue(rangePerforatingSection.maxNum, 'rangePerforatingSection', 'maxNum')"
+                        v-model="rangePerforatingSection.maxNum"
+                        size="mini"/>
+                    <span class="font16">步长：</span> <el-input
+                      :disabled="disabled"
+                      class="input16"
+                      v-model="rangePerforatingSection.step"
+                      size="mini"/>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-checkbox label="perforationPermeability" style="margin-right: 10px">射孔段渗透率</el-checkbox>
+                    <span class="font16">范围：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      @input="inputValue(rangePerforationPermeability.minNum, 'rangePerforationPermeability', 'minNum')"
+                      @blur="inputValue(rangePerforationPermeability.minNum, 'rangePerforationPermeability', 'minNum')"
+                      v-model="rangePerforationPermeability.minNum"
+                      size="mini"/>-
+                    <el-input
+                        class="input16"
+                        :disabled="disabled"
+                        @input="inputValue(rangePerforationPermeability.maxNum, 'rangePerforationPermeability', 'maxNum')"
+                        @blur="inputValue(rangePerforationPermeability.maxNum, 'rangePerforationPermeability', 'maxNum')"
+                        v-model="rangePerforationPermeability.maxNum"
+                        size="mini"/>
+                    <span class="font16">步长：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      v-model="rangePerforationPermeability.step"
+                      size="mini"/>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-checkbox label="perforationThickness" style="margin-right: 10px">射孔厚度</el-checkbox>
+                    <span class="font16">范围：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      @input="inputValue(rangePerforationThickness.minNum, 'rangePerforationThickness', 'minNum')"
+                      @blur="inputValue(rangePerforationThickness.minNum, 'rangePerforationThickness', 'minNum')"
+                      v-model="rangePerforationThickness.minNum"
+                      size="mini"/>-
+                    <el-input
+                        class="input16"
+                        :disabled="disabled"
+                        @input="inputValue(rangePerforationThickness.maxNum, 'rangePerforationThickness', 'maxNum')"
+                        @blur="inputValue(rangePerforationThickness.maxNum, 'rangePerforationThickness', 'maxNum')"
+                        v-model="rangePerforationThickness.maxNum"
+                        size="mini"/>
+                    <span class="font16">步长：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      v-model="rangePerforationThickness.step"
+                      size="mini"/>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-checkbox label="perforationLayer" style="margin-right: 10px">射孔层数</el-checkbox>
+                    <span class="font16">范围：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      @input="inputValue(rangePerforationLayer.minNum, 'rangePerforationLayer', 'minNum')"
+                      @blur="inputValue(rangePerforationLayer.minNum, 'rangePerforationLayer', 'minNum')"
+                      v-model="rangePerforationLayer.minNum"
+                      size="mini"/>-
+                    <el-input
+                        :disabled="disabled"
+                        class="input16"
+                        @input="inputValue(rangePerforationLayer.maxNum, 'rangePerforationLayer', 'maxNum')"
+                        @blur="inputValue(rangePerforationLayer.maxNum, 'rangePerforationLayer', 'maxNum')"
+                        v-model="rangePerforationLayer.maxNum"
+                        size="mini"/>
+                    <span class="font16">步长：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      v-model="rangePerforationLayer.step"
+                      size="mini"/>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-checkbox label="porosityPerforationSection" style="margin-right: 10px">射孔段孔隙度</el-checkbox>
+                    <span class="font16">范围：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      @input="inputValue(rangePorosityPerforationSection.minNum, 'rangePorosityPerforationSection', 'minNum')"
+                      @blur="inputValue(rangePorosityPerforationSection.minNum, 'rangePorosityPerforationSection', 'minNum')"
+                      v-model="rangePorosityPerforationSection.minNum"
+                      size="mini"/>-
+                    <el-input
+                        class="input16"
+                        :disabled="disabled"
+                        @input="inputValue(rangePorosityPerforationSection.maxNum, 'rangePorosityPerforationSection', 'maxNum')"
+                        @blur="inputValue(rangePorosityPerforationSection.maxNum, 'rangePorosityPerforationSection', 'maxNum')"
+                        v-model="rangePorosityPerforationSection.maxNum"
+                        size="mini"/>
+                    <span class="font16">步长：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      v-model="rangePorosityPerforationSection.step"
+                      size="mini"/>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-checkbox label="reservoirThickness" style="margin-right: 10px">油藏厚度</el-checkbox>
+                    <span class="font16">范围：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      @input="inputValue(rangeReservoirThickness.minNum, 'rangeReservoirThickness', 'minNum')"
+                      @blur="inputValue(rangeReservoirThickness.minNum, 'rangeReservoirThickness', 'minNum')"
+                      v-model="rangeReservoirThickness.minNum"
+                      size="mini"/>-
+                    <el-input
+                        :disabled="disabled"
+                        class="input16"
+                        @input="inputValue(rangeReservoirThickness.maxNum, 'rangeReservoirThickness', 'maxNum')"
+                        @blur="inputValue(rangeReservoirThickness.maxNum, 'rangeReservoirThickness', 'maxNum')"
+                        v-model="rangeReservoirThickness.maxNum"
+                        size="mini"/>
+                    <span class="font16">步长：</span> <el-input
+                      class="input16"
+                      :disabled="disabled"
+                      v-model="rangeReservoirThickness.step"
+                      size="mini"/>
+                  </el-col>
+                </el-checkbox-group>
+              </el-row>
 
-          <div  v-if="submit.deleted === 1"  style="float: left;margin-right: 10px">
+          <el-button v-if="submit.deleted === 1" style="float: right"  @click="addData()" type="primary">新增</el-button>
+          <el-button v-if="submit.deleted === 1" style="float: right"  @click="generate()" type="primary">生成推荐</el-button>
+          <el-button v-if="submit.deleted !== 1" style="float: right"  @click="download()" type="primary">下载</el-button>
+
+          <el-button @click="back()" style="float: right">返回</el-button>
+          <el-button v-if="submit.deleted === 1"  @click="check()" type="primary">确定</el-button>
+
+          <div  v-if="submit.deleted === 1"  style="float: left;margin-right: 10px;float: right">
             <el-upload
                     ref="upload"
                     :show-file-list="false"
@@ -55,27 +201,31 @@
                   align="center"
                   prop="cycle"
                   label="周期"
+                  v-if="!cycle"
                   width="120"
               >
               </el-table-column>
               <el-table-column
                   align="center"
                   prop="perforatingSection"
-                  label="射孔并段"
+                  v-if="!perforatingSection"
+                  label="射孔井段"
                   width="120"
               >
               </el-table-column>
               <el-table-column
                   align="center"
+                  v-if="!perforationThickness"
                   prop="perforationThickness"
                   label="射孔厚度"
                   width="300"
               >
               </el-table-column>
-              <el-table-column align="center" prop="perforationLayer" label="射孔层数">
+              <el-table-column  v-if="!perforationLayer" align="center" prop="perforationLayer" label="射孔层数">
               </el-table-column>
               <el-table-column
                   align="center"
+                  v-if="!perforationPermeability"
                   prop="perforationPermeability"
                   label="射孔段渗透率"
                   width="120"
@@ -84,12 +234,14 @@
               <el-table-column
                   align="center"
                   prop="porosityPerforationSection"
+                  v-if="!porosityPerforationSection"
                   label="射孔段孔隙度"
                   width="300"
               >
               </el-table-column>
               <el-table-column
                   align="center"
+                  v-if="!reservoirThickness"
                   prop="reservoirThickness"
                   label="油藏厚度"
                   width="120"
@@ -149,7 +301,40 @@
               >
               </el-table-column>
             </el-table-column>
-            <el-table-column fixed="right" align="center" prop="score" label="周期">
+            <el-table-column v-if="cycle" fixed="right" align="center" prop="cycle" label="周期">
+              <template slot-scope="scope">
+                <span >{{scope.row.cycle}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column v-if="perforatingSection" fixed="right" align="center" prop="perforatingSection" label="射孔井段">
+              <template slot-scope="scope">
+                <span >{{scope.row.perforatingSection}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column v-if="perforationPermeability" fixed="right" align="center" prop="perforationPermeability" label="射孔段渗透率">
+              <template slot-scope="scope">
+                <span >{{scope.row.perforationPermeability}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column v-if="perforationThickness" fixed="right" align="center" prop="perforationThickness" label="射孔厚度">
+              <template slot-scope="scope">
+                <span >{{scope.row.perforationThickness}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column v-if="perforationLayer" fixed="right" align="center" prop="perforationLayer" label="射孔层数">
+              <template slot-scope="scope">
+                <span >{{scope.row.perforationLayer}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column v-if="porosityPerforationSection" fixed="right" align="center" prop="porosityPerforationSection" label="射孔段孔隙度">
+              <template slot-scope="scope">
+                <span >{{scope.row.porosityPerforationSection}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column v-if="reservoirThickness" fixed="right" align="center" prop="reservoirThickness" label="油藏厚度">
+              <template slot-scope="scope">
+                <span >{{scope.row.reservoirThickness}}</span>
+              </template>
             </el-table-column>
           </el-table>
         </el-card>
@@ -255,7 +440,7 @@
   import {Component, Vue} from "vue-property-decorator";
   import {getToken} from "@/api/auth";
   import { list, add, generate } from "@/api/predictionScore";
-  import { get } from "@/api/submit";
+  import { get, updateSubmit } from "@/api/submit";
 
   const somemodule = namespace("user")
   @Component({
@@ -267,18 +452,58 @@
     private back() {
       window.history.go(-1);
     }
+    checkList = []
     header =  {
       'token': getToken()
     }
     private submit = {
+    }
+    disabled = false
+    cycle = false
+    perforatingSection = false
+    perforationPermeability = false
+    perforationThickness = false
+    perforationLayer = false
+    porosityPerforationSection = false
+    reservoirThickness = false
+    rangePerforationPermeability = {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
+    }
+    rangePerforationThickness = {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
+    }
 
+    rangePerforatingSection= {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
+    }
+    rangeCycle= {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
+    }
+    rangePerforationLayer= {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
+    }
+    rangePorosityPerforationSection= {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
+    }
+    rangeReservoirThickness = {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
     }
     loading = false
 
-    range= {
-      minNum: "",
-      maxNum: ""
-    }
     formData = {
       cycle: "12",
       perforatingSection: "12",
@@ -335,10 +560,20 @@
       this.dialogOrgVisible = false
     }
     generate() {
-      generate<[]>(this.$route.params.id).then(res => {
+      generate<[]>(this.$route.params.id, 'recommendInjection',{predict: this.submit.predict}).then(res => {
         this.tableData = res.data
         get<{}>(this.$route.params.id).then(res => {
           this.submit = res.data
+          this.submit.predict = JSON.parse(decodeURIComponent(this.submit.predict))
+          this.submit.predict.forEach(item => {
+            if (item != '') {
+              this.checkList.push(item.name)
+              this.check1(item)
+            }
+          })
+          if (this.checkList.length > 0) {
+            this.disabled = true
+          }
         })
       })
     }
@@ -349,11 +584,196 @@
       this.formData.submitId = this.$route.params.id
       get<{}>(this.$route.params.id).then(res => {
         this.submit = res.data
+        this.submit.predict = JSON.parse(decodeURIComponent(this.submit.predict))
+        this.submit.predict.forEach(item => {
+          if (item != '') {
+            this.checkList.push(item.name)
+            this.check1(item)
+          }
+        })
+        if (this.checkList.length > 0) {
+          this.disabled = true
+        }
       })
+
       this.list()
     }
     download() {
       window.open("/api/download/" + this.$route.params.id)
     }
+
+    inputValue(value:any, col:any, name:any){
+      const numReg = /^[0-9.]*$/
+      const numRe = new RegExp(numReg)
+      if(!numRe.test(value)) {
+        Vue.set(this[col], name, 0)
+      }
+    }
+    check() {
+      const checkList:any = []
+      this.checkList.forEach(item => {
+        let maxNum
+        let minNum
+        let step
+        if (item === 'cycle') {
+          maxNum = this.rangeCycle.maxNum
+          minNum = this.rangeCycle.minNum
+          step = this.rangeCycle.step
+        }
+        if (item === 'perforatingSection') {
+          maxNum = this.rangePerforatingSection.maxNum
+          minNum = this.rangePerforatingSection.minNum
+          step = this.rangePerforatingSection.step
+        }
+        if (item === 'perforationPermeability') {
+          maxNum = this.rangePerforationPermeability.maxNum
+          minNum = this.rangePerforationPermeability.minNum
+          step = this.rangePerforationPermeability.step
+        }
+        if (item === 'perforationThickness') {
+          maxNum = this.rangePerforationThickness.maxNum
+          minNum = this.rangePerforationThickness.minNum
+          step = this.rangePerforationThickness.step
+        }
+        if (item === 'perforationLayer') {
+          maxNum = this.rangePerforationLayer.maxNum
+          minNum = this.rangePerforationLayer.minNum
+          step = this.rangePerforationLayer.step
+        }
+        if (item === 'porosityPerforationSection') {
+          maxNum = this.rangePorosityPerforationSection.maxNum
+          minNum = this.rangePorosityPerforationSection.minNum
+          step = this.rangePorosityPerforationSection.step
+        }
+        if (item === 'reservoirThickness') {
+          maxNum = this.rangeReservoirThickness.maxNum
+          minNum = this.rangeReservoirThickness.minNum
+          step = this.rangeReservoirThickness.step
+        }
+        const object = {
+          name: item,
+          minNum: minNum,
+          maxNum: maxNum,
+          step: step
+        }
+        checkList.push(object)
+      })
+      updateSubmit<[]>(this.$route.params.id, {predict: encodeURIComponent(JSON.stringify(checkList))})
+      this.disabled = true
+      this.cycle = false
+      this.perforatingSection = false
+      this.perforationPermeability = false
+      this.perforationLayer = false
+      this.perforationThickness = false
+      this.porosityPerforationSection = false
+      this.reservoirThickness = false
+      this.checkList.forEach(item => {
+        if (item === 'cycle') {
+          this.cycle = true
+        }
+        if (item === 'perforatingSection') {
+          this.perforatingSection = true
+        }
+        if (item === 'perforationPermeability') {
+          this.perforationPermeability = true
+        }
+        if (item === 'perforationThickness') {
+          this.perforationThickness = true
+        }
+        if (item === 'perforationLayer') {
+          this.perforationLayer = true
+        }
+        if (item === 'porosityPerforationSection') {
+          this.porosityPerforationSection = true
+        }
+        if (item === 'reservoirThickness') {
+          this.reservoirThickness = true
+        }
+
+      })
+    }
+    check1(value:any) {
+      if (value.name === 'cycle') {
+        this.rangeCycle.maxNum = value.maxNum
+        this.rangeCycle.minNum = value.minNum
+        this.rangeCycle.step = value.step
+      }
+      if (value.name === 'perforatingSection') {
+        this.rangePerforatingSection.maxNum = value.maxNum
+        this.rangePerforatingSection.minNum = value.minNum
+        this.rangePerforatingSection.step = value.step
+      }
+      if (value.name === 'perforationPermeability') {
+        this.rangePerforationPermeability.maxNum = value.maxNum
+        this.rangePerforationPermeability.minNum = value.minNum
+        this.rangePerforationPermeability.step = value.step
+      }
+      if (value.name === 'perforationThickness') {
+        this.rangePerforationThickness.maxNum = value.maxNum
+        this.rangePerforationThickness.minNum = value.minNum
+        this.rangePerforationThickness.step = value.step
+      }
+      if (value.name === 'perforationLayer') {
+        this.rangePerforationLayer.maxNum = value.maxNum
+        this.rangePerforationLayer.minNum = value.minNum
+        this.rangePerforationLayer.step = value.step
+      }
+
+      if (value.name === 'porosityPerforationSection') {
+        this.rangePorosityPerforationSection.maxNum = value.maxNum
+        this.rangePorosityPerforationSection.minNum = value.minNum
+        this.rangePorosityPerforationSection.step = value.step
+      }
+      if (value.name === 'reservoirThickness') {
+        this.rangeReservoirThickness.maxNum = value.maxNum
+        this.rangeReservoirThickness.minNum = value.minNum
+        this.rangeReservoirThickness.step = value.step
+      }
+
+      this.disabled = true
+      this.cycle = false
+      this.perforatingSection = false
+      this.perforationPermeability = false
+      this.perforationLayer = false
+      this.perforationThickness = false
+      this.porosityPerforationSection = false
+      this.reservoirThickness = false
+      this.checkList.forEach(item => {
+        if (item === 'cycle') {
+          this.cycle = true
+        }
+        if (item === 'perforatingSection') {
+          this.perforatingSection = true
+        }
+        if (item === 'perforationPermeability') {
+          this.perforationPermeability = true
+        }
+        if (item === 'perforationThickness') {
+          this.perforationThickness = true
+        }
+        if (item === 'perforationLayer') {
+          this.perforationLayer = true
+        }
+        if (item === 'porosityPerforationSection') {
+          this.porosityPerforationSection = true
+        }
+        if (item === 'reservoirThickness') {
+          this.reservoirThickness = true
+        }
+
+      })
+    }
   }
 </script>
+<style>
+.font16{
+  font-size: 14px;
+}
+.input16 {
+  width: 58px;
+}
+.el-input--mini .el-input__inner {
+  height: 20px;
+  line-height: 20px;
+}
+</style>

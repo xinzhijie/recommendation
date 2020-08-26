@@ -27,6 +27,15 @@ const mutations: any = {
     },
     setModelInfo: (state: any, model:any) => {
         state.user.modelInfo = model
+    },
+    removeUser: (state: any, model:any) => {
+        state.user = {
+            name:"",
+            id: "",
+            role:"",
+            model: "",
+            modelInfo: ""
+        }
     }
 
 };
@@ -34,11 +43,14 @@ const mutations: any = {
 const actions: any = {
     getUserInfo(context: { commit: Commit }) {
         state.token = getToken();
-        getUserInfo<User>({token: state.token}).then(response => {
-            const data = response.data
-            context.commit('setRole', data.role)
-            context.commit('setName', data.name)
-            context.commit('setId', data.id)
+        return new Promise(function(resolve, reject) {
+            getUserInfo<User>({token: state.token}).then(response => {
+                const data = response.data
+                context.commit('setRole', data.role)
+                context.commit('setName', data.name)
+                context.commit('setId', data.id)
+                resolve()
+            })
         })
     },
     setModel(context: { commit: Commit } , param: string) {
@@ -46,6 +58,9 @@ const actions: any = {
     },
     setModelInfo(context: { commit: Commit } , param: any) {
         context.commit('setModelInfo', param)
+    },
+    removeUser(context: { commit: Commit } , param: string) {
+        context.commit('removeUser', param)
     }
 
 };

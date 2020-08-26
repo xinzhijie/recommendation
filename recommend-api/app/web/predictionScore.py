@@ -14,7 +14,7 @@ from app.models.Response import success, to_json
 from app.models.Submit import Submit
 from app.models.User import User
 from flask import Blueprint
-
+from urllib import parse
 predictionScore = Blueprint('predictionScore', __name__)
 
 
@@ -29,11 +29,20 @@ def submit_list():
     return make_response(jsonify(success(temp)), 200)
 
 
-@predictionScore.route('/api/predictionScore/generate/<submitId>', methods=['GET', 'POST'])
-def generate(submitId):
-    db.session.execute("update prediction_score set score = '100' where submitId= " + submitId)
-    db.session.execute("update submit set deleted = 0 where id = " + submitId)
-    db.session.commit()
+@predictionScore.route('/api/<predictionScore>/generate/<submitId>', methods=['GET', 'POST'])
+def generate(predictionScore, submitId):
+    if predictionScore == 'predictionScore':
+        db.session.execute("update prediction_score set score = '100' where submitId= " + submitId)
+        db.session.execute("update submit set deleted = 0 where id = " + submitId)
+        db.session.commit()
+    else:
+        predict = request.get_json().get("predict", "")
+        sql = ''
+        for i in list(predict):
+            sql = sql + i['name'] + " = '2' ,"
+        db.session.execute("update prediction_score set " + sql[:-1] + " where submitId = " + submitId)
+        db.session.execute("update submit set deleted = 0 where id = " + submitId)
+        db.session.commit()
     temp = PredictionScore.query.filter(PredictionScore.submitId == submitId).all()
     return make_response(jsonify(success(temp)), 200)
 

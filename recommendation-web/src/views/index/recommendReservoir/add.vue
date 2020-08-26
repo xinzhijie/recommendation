@@ -8,28 +8,82 @@
     <el-row>
       <el-col :push="1" :span="22">
         <el-card>
-          <div style="float: right">
-            注剂量：<el-input
-                  style="width: 70px"
-                  v-model="range.minNum"
+          <el-row style="margin-bottom: 50px" >
+            <el-checkbox-group :disabled="disabled" v-model="checkList">
+              <el-col :span="8">
+                <el-checkbox label="injectionPattern" style="margin-right: 10px">注入方式</el-checkbox>
+                <span class="font16">范围：</span> <el-input
+                  class="input16"
+                  :disabled="disabled"
+                  @input="inputValue(rangeInjectionPattern.minNum, 'rangeInjectionPattern', 'minNum')"
+                  @blur="inputValue(rangeInjectionPattern.minNum, 'rangeInjectionPattern', 'minNum')"
+                  v-model="rangeInjectionPattern.minNum"
                   size="mini"/>-
-            <el-input
-                    style="width: 70px"
-                    v-model="range.maxNum"
+                <el-input
+                    class="input16"
+                    :disabled="disabled"
+                    @input="inputValue(rangeInjectionPattern.maxNum, 'rangeInjectionPattern', 'maxNum')"
+                    @blur="inputValue(rangeInjectionPattern.maxNum, 'rangeInjectionPattern', 'maxNum')"
+                    v-model="rangeInjectionPattern.maxNum"
                     size="mini"/>
-            <br/>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;步长：<el-input
-              style="width: 70px"
-              v-model="range.step"
-              size="mini"/>
-          </div>
-
-          <el-button v-if="submit.deleted === 1"  @click="addData()" type="primary">新增</el-button>
-          <el-button v-if="submit.deleted === 1"  @click="generate()" type="primary">生成推荐</el-button>
-          <el-button v-if="submit.deleted !== 1"  @click="download()" type="primary">下载</el-button>
-          <el-button @click="back()">返回</el-button>
-
-          <div  v-if="submit.deleted === 1"  style="float: left;margin-right: 10px">
+                <span class="font16">步长：</span> <el-input
+                  class="input16"
+                  :disabled="disabled"
+                  v-model="rangeInjectionPattern.step"
+                  size="mini"/>
+              </el-col>
+              <el-col :span="8">
+                <el-checkbox label="noteType" style="margin-right: 10px">注剂类型</el-checkbox>
+                <span class="font16">范围：</span> <el-input
+                  :disabled="disabled"
+                  class="input16"
+                  v-model="rangeNoteType.minNum"
+                  @input="inputValue(rangeNoteType.minNum, 'rangeNoteType', 'minNum')"
+                  @blur="inputValue(rangeNoteType.minNum, 'rangeNoteType', 'minNum')"
+                  size="mini"/>-
+                <el-input
+                    :disabled="disabled"
+                    class="input16"
+                    @input="inputValue(rangeNoteType.maxNum, 'rangeNoteType', 'maxNum')"
+                    @blur="inputValue(rangeNoteType.maxNum, 'rangeNoteType', 'maxNum')"
+                    v-model="rangeNoteType.maxNum"
+                    size="mini"/>
+                <span class="font16">步长：</span> <el-input
+                  :disabled="disabled"
+                  class="input16"
+                  v-model="rangeNoteType.step"
+                  size="mini"/>
+              </el-col>
+              <el-col :span="8">
+                <el-checkbox label="noteDose" style="margin-right: 10px">注剂量</el-checkbox>
+                <span class="font16">范围：</span> <el-input
+                  class="input16"
+                  :disabled="disabled"
+                  @input="inputValue(rangeNoteDose.minNum, 'rangeNoteDose', 'minNum')"
+                  @blur="inputValue(rangeNoteDose.minNum, 'rangeNoteDose', 'minNum')"
+                  v-model="rangeNoteDose.minNum"
+                  size="mini"/>-
+                <el-input
+                    class="input16"
+                    :disabled="disabled"
+                    @input="inputValue(rangeNoteDose.maxNum, 'rangeNoteDose', 'maxNum')"
+                    @blur="inputValue(rangeNoteDose.maxNum, 'rangeNoteDose', 'maxNum')"
+                    v-model="rangeNoteDose.maxNum"
+                    size="mini"/>
+                <span class="font16">步长：</span> <el-input
+                  class="input16"
+                  :disabled="disabled"
+                  v-model="rangeNoteDose.step"
+                  size="mini"/>
+              </el-col>
+            </el-checkbox-group>
+          </el-row>
+          <el-button v-if="submit.deleted === 1"  @click="check()" type="primary">确定</el-button>
+          <el-button v-if="submit.deleted === 1" style="float: right"   @click="addData()" type="primary">新增</el-button>
+          <el-button v-if="submit.deleted === 1" style="float: right"   @click="generate()" type="primary">生成推荐</el-button>
+          <el-button v-if="submit.deleted !== 1"  style="float: right"  @click="download()" type="primary">下载</el-button>
+          <el-button @click="back()" style="float: right" >返回</el-button>
+          <div  v-if="submit.deleted === 1"  style="float: right;margin-right: 10px">
             <el-upload
                     ref="upload"
                     :show-file-list="false"
@@ -41,9 +95,7 @@
               <el-button slot="trigger" type="primary" >导入Excel</el-button>
             </el-upload>
           </div>
-
-
-          <el-table :data="tableData" :height="460" :max-height="460">
+          <el-table style="margin-top: 20px" :data="tableData" :height="460" :max-height="460">
             <el-table-column
                 align="center"
                 type="index"
@@ -97,19 +149,19 @@
               </el-table-column>
             </el-table-column>
             <el-table-column align="center" label="注剂参数">
-
-
-              <el-table-column align="center" prop="noteType" label="注剂类型">
+              <el-table-column v-if="!noteType" align="center" prop="noteType" label="注剂类型">
               </el-table-column>
               <el-table-column
                   align="center"
                   prop="injectionPattern"
                   label="注入方式"
+                  v-if="!injectionPattern"
                   width="120"
               >
               </el-table-column>
               <el-table-column
                   align="center"
+                  v-if="!noteDose"
                   prop="noteDose"
                   label="注剂量"
                   width="120"
@@ -117,8 +169,6 @@
               </el-table-column>
             </el-table-column>
             <el-table-column align="center" label="注气参数">
-
-
               <el-table-column
                   align="center"
                   prop="steamInjectionIntensity"
@@ -149,7 +199,11 @@
               >
               </el-table-column>
             </el-table-column>
-            <el-table-column fixed="right" align="center" prop="score" label="注剂量">
+            <el-table-column v-if="noteType" fixed="right" align="center" prop="noteType" label="注剂类型">
+            </el-table-column>
+            <el-table-column v-if="injectionPattern" fixed="right" align="center" prop="injectionPattern" label="注入方式">
+            </el-table-column>
+            <el-table-column v-if="noteDose" fixed="right" align="center" prop="noteDose" label="注剂量">
             </el-table-column>
           </el-table>
         </el-card>
@@ -255,7 +309,7 @@
   import {Component, Vue} from "vue-property-decorator";
   import {getToken} from "@/api/auth";
   import { list, add, generate } from "@/api/predictionScore";
-  import { get } from "@/api/submit";
+  import { get, updateSubmit } from "@/api/submit";
 
   const somemodule = namespace("user")
   @Component({
@@ -271,13 +325,28 @@
       'token': getToken()
     }
     private submit = {
-
     }
-
-    range= {
-      minNum: "",
-      maxNum: ""
+    noteDose = false
+    injectionPattern = false
+    noteType = false
+    checkList = []
+    disabled = false
+    rangeInjectionPattern = {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
     }
+    rangeNoteDose = {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
+    }
+    rangeNoteType = {
+      minNum: 0,
+      maxNum: 100,
+      step: 1
+    }
+    loading = false
     formData = {
       cycle: "12",
       perforatingSection: "12",
@@ -318,8 +387,10 @@
       return false
     }
     list() {
+      this.loading = true
       list<any>({submitId : this.$route.params.id}).then(res => {
         this.tableData = res.data
+        this.loading = false
       })
     }
     addData() {
@@ -332,10 +403,20 @@
       this.dialogOrgVisible = false
     }
     generate() {
-      generate<[]>(this.$route.params.id).then(res => {
+      generate<[]>(this.$route.params.id, 'recommendReservoir',{predict: this.submit.predict}).then(res => {
         this.tableData = res.data
         get<{}>(this.$route.params.id).then(res => {
           this.submit = res.data
+          this.submit.predict = JSON.parse(decodeURIComponent(this.submit.predict))
+          this.submit.predict.forEach(item => {
+            if (item != '') {
+              this.checkList.push(item.name)
+              this.check1(item)
+            }
+          })
+          if (this.checkList.length > 0) {
+            this.disabled = true
+          }
         })
       })
     }
@@ -346,11 +427,119 @@
       this.formData.submitId = this.$route.params.id
       get<{}>(this.$route.params.id).then(res => {
         this.submit = res.data
+        this.submit.predict = JSON.parse(decodeURIComponent(this.submit.predict))
+        this.submit.predict.forEach(item => {
+          if (item != '') {
+            this.checkList.push(item.name)
+            this.check1(item)
+          }
+        })
+        if (this.checkList.length > 0) {
+          this.disabled = true
+        }
       })
       this.list()
+    }
+    inputValue(value:any, col:any, name:any){
+      const numReg = /^[0-9.]*$/
+      const numRe = new RegExp(numReg)
+      if(!numRe.test(value)) {
+        Vue.set(this[col], name, 0)
+      }
+    }
+    check() {
+      const checkList:any = []
+      this.checkList.forEach(item => {
+        let maxNum
+        let minNum
+        let step
+        if (item === 'noteDose') {
+          maxNum = this.rangeNoteDose.maxNum
+          minNum = this.rangeNoteDose.minNum
+          step = this.rangeNoteDose.step
+        }
+        if (item === 'injectionPattern') {
+          maxNum = this.rangeInjectionPattern.maxNum
+          minNum = this.rangeInjectionPattern.minNum
+          step = this.rangeInjectionPattern.step
+        }
+        if (item === 'noteType') {
+          maxNum = this.rangeNoteType.maxNum
+          minNum = this.rangeNoteType.minNum
+          step = this.rangeNoteType.step
+        }
+        const object = {
+          name: item,
+          minNum: minNum,
+          maxNum: maxNum,
+          step: step
+        }
+        checkList.push(object)
+      })
+      updateSubmit<[]>(this.$route.params.id, {predict: encodeURIComponent(JSON.stringify(checkList))})
+      this.disabled = true
+      this.noteDose = false
+      this.injectionPattern = false
+      this.noteType = false
+      this.checkList.forEach(item => {
+        if (item === 'noteDose') {
+          this.noteDose = true
+        }
+        if (item === 'injectionPattern') {
+          this.injectionPattern = true
+        }
+        if (item === 'noteType') {
+          this.noteType = true
+        }
+
+      })
+    }
+    check1(value:any) {
+      if (value.name === 'noteDose') {
+        this.rangeNoteDose.maxNum = value.maxNum
+        this.rangeNoteDose.minNum = value.minNum
+        this.rangeNoteDose.step = value.step
+      }
+      if (value.name === 'injectionPattern') {
+        this.rangeInjectionPattern.maxNum = value.maxNum
+        this.rangeInjectionPattern.minNum = value.minNum
+        this.rangeInjectionPattern.step = value.step
+      }
+      if (value.name === 'noteType') {
+        this.rangeNoteType.maxNum = value.maxNum
+        this.rangeNoteType.minNum = value.minNum
+        this.rangeNoteType.step = value.step
+      }
+      this.disabled = true
+      this.noteDose = false
+      this.injectionPattern = false
+      this.noteType = false
+      this.checkList.forEach(item => {
+        if (item === 'noteDose') {
+          this.noteDose = true
+        }
+        if (item === 'injectionPattern') {
+          this.injectionPattern = true
+        }
+        if (item === 'noteType') {
+          this.noteType = true
+        }
+      })
     }
     download() {
       window.open("/api/download/" + this.$route.params.id)
     }
   }
 </script>
+<style>
+.font16{
+  font-size: 14px;
+}
+.input16 {
+  width: 58px;
+}
+.el-input--mini .el-input__inner {
+  height: 20px;
+  line-height: 20px;
+}
+</style>

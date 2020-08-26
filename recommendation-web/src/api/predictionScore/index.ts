@@ -14,8 +14,9 @@ export const add = <T>(data:any):Promise<Ajax.Response<T>> =>
         data: data
     })
 
-export const generate = <T>(data:string):Promise<Ajax.Response<T>> =>
+export const generate = <T>(sid:string, code:string, data:any):Promise<Ajax.Response<T>> =>
     request<Ajax.Response>({
-        url: `/api/predictionScore/generate/${data}`,
-        method: 'post'
+        url: `/api/${code}/generate/${sid}`,
+        method: 'post',
+      data: data
     })

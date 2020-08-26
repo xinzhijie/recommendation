@@ -26,3 +26,10 @@ export const deleteSubmit = <T>(sid:string):Promise<Ajax.Response<T>> =>
         url: `/api/submit/delete/${sid}`,
         method: 'post'
     })
+
+export const updateSubmit = <T>(sid:string, data:any):Promise<Ajax.Response<T>> =>
+  request<Ajax.Response>({
+    url: `/api/submit/update/${sid}`,
+    method: 'post',
+    data: data
+  })

@@ -10,6 +10,7 @@ class Submit(db.Model):
     deleted = db.Column(db.Integer)
     model_path = db.Column(db.String(255))
     model_name = db.Column(db.String(255))
+    predict = db.Column(db.String(250))
 
     def to_dict(self):
         return {c.name: getattr(self, c.name, None) for c in self.__table__.columns}
